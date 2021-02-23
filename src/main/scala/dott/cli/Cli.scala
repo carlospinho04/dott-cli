@@ -1,10 +1,10 @@
-package example
+package dott.cli
 
 import cats.effect._
 import com.monovore.decline._
 import com.monovore.decline.effect._
-
-import java.time.ZoneOffset
+import dott.cli.persistence.OrderStore
+import dott.cli.rules.ProductRules
 
 object Cli
   extends CommandIOApp(
@@ -16,9 +16,9 @@ object Cli
 
     Commands.filterOrdersOpts.map({
       command =>
-        IO {
-          println(s"start date: ${command.startDate.toInstant(ZoneOffset.UTC).toEpochMilli}, end date: ${command.endDate.toInstant(ZoneOffset.UTC).toEpochMilli}")
-        }
+        val orderStore = OrderStore.impl[IO]()
+        val productRules = ProductRules.impl[IO](orderStore)
+        productRules.get(command.startDate, command.endDate).map(println(_))
     })
       .map(_.as(ExitCode.Success))
   }

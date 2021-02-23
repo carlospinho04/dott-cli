@@ -1,4 +1,4 @@
-package example
+package dott.cli
 
 import cats.implicits._
 import com.monovore.decline._
@@ -6,6 +6,15 @@ import com.monovore.decline.time._
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
+object DateTime {
+  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+  val myDateArg: Argument[LocalDateTime] = localDateTimeWithFormatter(
+    formatter
+  )
+}
+
 
 object Commands {
   val myDateArg: Argument[LocalDateTime] = localDateTimeWithFormatter(
