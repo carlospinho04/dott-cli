@@ -1,34 +1,38 @@
 package dott.cli
 
+import cats.data.{NonEmptyList, Validated}
 import cats.implicits._
 import com.monovore.decline._
 import com.monovore.decline.time._
+import dott.cli.domain.Interval
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
-object DateTime {
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-
-  val myDateArg: Argument[LocalDateTime] = localDateTimeWithFormatter(
-    formatter
-  )
-}
-
 
 object Commands {
   val myDateArg: Argument[LocalDateTime] = localDateTimeWithFormatter(
     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
   )
 
-  private val startDateOpt = Opts.option[LocalDateTime]("start-date", help = "start interval date")
+  private val startDateOpt = Opts.argument[LocalDateTime]("start-date")
 
-  private val endDateOpt = Opts.option[LocalDateTime]("end-date", help = "end interval date")
+  private val endDateOpt = Opts.argument[LocalDateTime]("end-date")
 
-  case class DatePeriod(startDate: LocalDateTime, endDate: LocalDateTime)
+  private val intervals = Opts.arguments[String]("intervals")
+    .mapValidated { list =>
+      list.traverse { s =>
+        s.split("-", 2) match {
+          case Array(key, value) => Validated.valid(Interval(key.toInt, value.toInt))
+          case _ => Validated.invalidNel(s"Invalid key:value pair: $list")
+        }
+      }
 
-  val filterOrdersOpts: Opts[DatePeriod] = Opts.subcommand("filter", "filter orders") {
-    (startDateOpt, endDateOpt).mapN(DatePeriod)
+    }
+
+  case class FilterArguments(startDate: LocalDateTime, endDate: LocalDateTime, intervals: NonEmptyList[Interval])
+
+  val filterOrdersOpts: Opts[FilterArguments] = Opts.subcommand("filter", "filter orders") {
+    (startDateOpt, endDateOpt, intervals).mapN(FilterArguments)
   }
 
 }

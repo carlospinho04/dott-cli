@@ -18,7 +18,11 @@ object Cli
       command =>
         val orderStore = OrderStore.impl[IO]()
         val productRules = ProductRules.impl[IO](orderStore)
-        productRules.get(command.startDate, command.endDate).map(println(_))
+        productRules.get(command.startDate, command.endDate, command.intervals.toList).map { results =>
+          results.map{ case (interval, count) =>
+            println(s"${interval.minMonth}-${interval.maxMonth} months: $count orders")
+          }
+        }
     })
       .map(_.as(ExitCode.Success))
   }
