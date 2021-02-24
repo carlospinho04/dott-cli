@@ -1,6 +1,6 @@
 package dott.cli.rules
 
-import cats.effect.Effect
+import cats.effect.Async
 import cats.implicits._
 import dott.cli.domain.Interval
 import dott.cli.persistence.OrderStore
@@ -14,7 +14,7 @@ trait ProductRules[F[_]] {
 
 object ProductRules {
 
-  def impl[F[_]: Effect](orderStore: OrderStore[F]): ProductRules[F] = new ProductRules[F] {
+  def impl[F[_]: Async](orderStore: OrderStore[F]): ProductRules[F] = new ProductRules[F] {
     override def get(startDate: LocalDateTime,
                      endDate: LocalDateTime,
                      intervals: Seq[Interval]): F[Seq[(Interval, Int)]] = {

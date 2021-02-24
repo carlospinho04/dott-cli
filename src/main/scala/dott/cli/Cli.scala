@@ -11,7 +11,6 @@ import dott.cli.rules.ProductRules
 object Cli extends CommandIOApp(name = "dott-cli", header = "Cli to check if a product is still available to buy") {
 
   override def main: Opts[IO[ExitCode]] = {
-
     Commands.filterOrdersOpts
       .map({ command =>
         val orderStore = OrderStore.impl[IO]()
@@ -22,7 +21,8 @@ object Cli extends CommandIOApp(name = "dott-cli", header = "Cli to check if a p
               generateOutput(interval, count)
           }
         }
-      }).map(_.map(_.fold(error => error, output => {
+      })
+      .map(_.map(_.fold(error => error, output => {
         println(output.mkString("\n"))
         ExitCode.Success
       })))

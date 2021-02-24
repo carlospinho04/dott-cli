@@ -31,10 +31,10 @@ object OrderStore {
                     BigDecimal(1.3),
                     LocalDateTime.parse("2020-07-04T11:30:40", formatter)),
             Product(ProductIdentifier(1),
-                    "ric fazeres",
-                    "food",
-                    0.3f,
-                    BigDecimal(1.3),
+                    "computer",
+                    "technology",
+                    3.0f,
+                    BigDecimal(900),
                     LocalDateTime.parse("2020-04-04T11:30:40", formatter))
           )
         )
