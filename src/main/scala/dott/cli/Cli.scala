@@ -13,8 +13,10 @@ object Cli extends CommandIOApp(name = "dott-cli", header = "Cli to check if a p
   override def main: Opts[IO[ExitCode]] = {
     Commands.filterOrdersOpts
       .map({ command =>
+        //Components initialize
         val orderStore = OrderStore.impl[IO]()
         val productRules = ProductRules.impl[IO](orderStore)
+
         productRules.get(command.startDate, command.endDate, command.intervals.toList).map { results =>
           results.traverse {
             case (interval, count) =>

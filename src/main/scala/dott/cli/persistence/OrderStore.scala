@@ -12,7 +12,12 @@ trait OrderStore[F[_]] {
 
 object OrderStore {
 
-  //Future improvements: Having h2 and doobie here could be a thing
+  /*
+  Future improvements: Having h2(https://www.h2database.com/html/main.html) and doobie(https://tpolecat.github.io/doobie/) here can be a solution
+  A way to get this output we could do:
+  Having a relational db, we could filter all orders in the desired period, then we could get all the items for those orders and then get
+  the Product to get the creation date.
+   */
   def impl[F[_]: Effect](): OrderStore[F] = new OrderStore[F] {
     override def getProductsInInterval(startDate: LocalDateTime, endDate: LocalDateTime): F[Seq[Product]] = {
       Effect[F].liftIO(

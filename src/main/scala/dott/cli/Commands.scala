@@ -25,7 +25,7 @@ object Commands {
             Validated.valid(Interval(Option(minMonth.toInt), None))
           case Array(s"<$maxMonth") if checkIfIsNumber(maxMonth) =>
             Validated.valid(Interval(None, Option(maxMonth.toInt)))
-          case _ => Validated.invalidNel(s"Invalid key:value pair: $intervals")
+          case _ => Validated.invalidNel(s"Invalid min and max month: $intervals")
         }
       }
     }
@@ -36,7 +36,7 @@ object Commands {
 
   case class FilterArguments(startDate: LocalDateTime, endDate: LocalDateTime, intervals: NonEmptyList[Interval])
 
-  val filterOrdersOpts: Opts[FilterArguments] = Opts.subcommand("filter", "filter orders") {
+  val filterOrdersOpts: Opts[FilterArguments] = Opts.subcommand("filter", "filter orders in a specific period of time") {
     (startDateOpt, endDateOpt, intervals).mapN(FilterArguments)
   }
 
