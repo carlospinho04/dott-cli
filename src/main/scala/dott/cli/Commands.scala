@@ -36,8 +36,9 @@ object Commands {
 
   case class FilterArguments(startDate: LocalDateTime, endDate: LocalDateTime, intervals: NonEmptyList[Interval])
 
-  val filterOrdersOpts: Opts[FilterArguments] = Opts.subcommand("filter", "filter orders in a specific period of time") {
-    (startDateOpt, endDateOpt, intervals).mapN(FilterArguments)
-  }
+  val filterOrdersOpts: Opts[FilterArguments] =
+    Opts.subcommand("filter", "filter orders in a specific period of time") {
+      (startDateOpt, endDateOpt, intervals).mapN(FilterArguments)
+    }
 
 }
