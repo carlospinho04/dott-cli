@@ -9,7 +9,5 @@ import java.time.format.DateTimeFormatter
 object DateTime {
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
-  val myDateArg: Argument[LocalDateTime] = localDateTimeWithFormatter(
-    formatter
-  )
+  val myDateArg: Argument[LocalDateTime] = localDateTimeWithFormatter(formatter)
 }

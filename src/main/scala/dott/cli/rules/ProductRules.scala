@@ -14,13 +14,16 @@ trait ProductRules[F[_]] {
 
 object ProductRules {
 
-  def impl[F[_] : Effect](orderStore: OrderStore[F]): ProductRules[F] = new ProductRules[F] {
-    override def get(startDate: LocalDateTime, endDate: LocalDateTime, intervals: Seq[Interval]): F[Seq[(Interval, Int)]] = {
+  def impl[F[_]: Effect](orderStore: OrderStore[F]): ProductRules[F] = new ProductRules[F] {
+    override def get(startDate: LocalDateTime,
+                     endDate: LocalDateTime,
+                     intervals: Seq[Interval]): F[Seq[(Interval, Int)]] = {
       orderStore.getProductsInInterval(startDate, endDate).map { products =>
         intervals.map { interval =>
           val productsFiltered = products.filter { product =>
             val diffInMonths = ChronoUnit.MONTHS.between(product.creationDate, LocalDateTime.now())
-            diffInMonths >= interval.minMonth && diffInMonths <= interval.maxMonth
+            interval.minMonth.forall(minMonth => diffInMonths >= minMonth) && interval.maxMonth
+              .forall(maxMonth => diffInMonths <= maxMonth)
           }
           (interval, productsFiltered.size)
         }
